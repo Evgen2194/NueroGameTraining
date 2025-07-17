@@ -41,23 +41,33 @@ class UI:
             params = action_params[0].cpu().numpy()
             center_x = int(params[0] * vis_frame.shape[1])
             center_y = int(params[1] * vis_frame.shape[0])
-            cv2.circle(overlay, (center_x, center_y), 20, (0, 255, 0), -1)
+            cv2.circle(overlay, (center_x, center_y), 30, (0, 0, 255), 3)
+            cv2.putText(overlay, "CLICK", (center_x - 30, center_y - 40),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         elif action_type == config.ACTION_DRAG:
             params = action_params[0].cpu().numpy()
             start_x = int(params[0] * vis_frame.shape[1])
             start_y = int(params[1] * vis_frame.shape[0])
             end_x = int(params[2] * vis_frame.shape[1])
             end_y = int(params[3] * vis_frame.shape[0])
-            cv2.arrowedLine(overlay, (start_x, start_y), (end_x, end_y), (0, 255, 0), 3)
+            cv2.arrowedLine(overlay, (start_x, start_y), (end_x, end_y), (0, 0, 255), 5)
+            cv2.putText(overlay, "DRAG", (start_x - 30, start_y - 20),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         elif action_type == config.ACTION_WAIT:
-            cv2.putText(overlay, "WAIT", (vis_frame.shape[1] // 4, vis_frame.shape[0] // 2),
-                        cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 3)
+            cv2.putText(overlay, "WAIT", (vis_frame.shape[1] // 3, vis_frame.shape[0] // 2),
+                        cv2.FONT_HERSHEY_SIMPLEX, 3, (0, 0, 255), 5)
 
         alpha = 0.5
         cv2.addWeighted(overlay, alpha, vis_frame, 1 - alpha, 0, vis_frame)
 
-        cv2.imshow("Agent Suggestion", vis_frame)
-        cv2.waitKey(1) # Necessary to display the window
+        if self.action_visual is None:
+            self.action_visual = "Agent Suggestion"
+            cv2.namedWindow(self.action_visual)
+            cv2.moveWindow(self.action_visual, self.game_area[0], self.game_area[1])
+            cv2.resizeWindow(self.action_visual, self.game_area[2] - self.game_area[0], self.game_area[3] - self.game_area[1])
+
+        cv2.imshow(self.action_visual, vis_frame)
+        cv2.waitKey(1)
 
     def get_user_feedback(self):
         self.feedback = None
