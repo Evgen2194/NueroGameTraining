@@ -124,3 +124,7 @@ class UI:
             # No actual action, just wait
             print("Action: WAIT")
             pass
+
+if __name__ == '__main__':
+    ui = UI()
+    ui.select_game_area()
