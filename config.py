@@ -1,0 +1,28 @@
+# Screen capture settings
+TARGET_RESOLUTION = (128, 128)
+FRAME_STACK_SIZE = 4
+
+# Model settings
+INPUT_CHANNELS = FRAME_STACK_SIZE * 3  # 4 frames * 3 RGB channels
+
+# Training settings
+BATCH_SIZE = 32
+LEARNING_RATE = 0.001
+REPLAY_MEMORY_SIZE = 10000
+TRAINING_THRESHOLD = 50
+
+# Action space
+ACTION_CLICK = 0
+ACTION_DRAG = 1
+ACTION_WAIT = 2
+ACTION_SPACE = [ACTION_CLICK, ACTION_DRAG, ACTION_WAIT]
+
+# Rewards
+REWARD_APPROVE = 1.0
+REWARD_REJECT = -1.0
+REWARD_STRATEGIC_WIN = 1.0
+REWARD_STRATEGIC_LOSS = -1.0
+
+# File paths
+MODEL_PATH = "agent_model.pth"
+MEMORY_PATH = "replay_memory.pkl"
