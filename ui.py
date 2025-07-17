@@ -67,16 +67,6 @@ class UI:
 
     def _on_press(self, key):
         try:
-            if key.char == '1':
-                self.feedback = "start_mission"
-                return False
-            elif key.char == '2':
-                self.feedback = "mission_win"
-                return False
-            elif key.char == '3':
-                self.feedback = "mission_loss"
-                return False
-        except AttributeError:
             if key == keyboard.Key.up:
                 self.feedback = "approve"
                 return False
@@ -89,7 +79,48 @@ class UI:
             elif key == keyboard.Key.space:
                 self.feedback = "skip"
                 return False
+            # Hotkeys for mission control
+            elif key.char == '1':
+                self.feedback = "start_mission"
+                return False
+            elif key.char == '2':
+                self.feedback = "mission_win"
+                return False
+            elif key.char == '3':
+                self.feedback = "mission_loss"
+                return False
+        except AttributeError:
+            # This handles non-char keys if needed
+            pass
 
     def perform_action(self, action):
-        # TODO: Implement action execution
-        pass
+        action_type, action_params = action
+        action_type = action_type.item()
+
+        # Get absolute coordinates based on game_area
+        abs_x = self.game_area[0]
+        abs_y = self.game_area[1]
+        width = self.game_area[2] - self.game_area[0]
+        height = self.game_area[3] - self.game_area[1]
+
+        if action_type == config.ACTION_CLICK:
+            params = action_params[0].cpu().numpy()
+            target_x = abs_x + int(params[0] * width)
+            target_y = abs_y + int(params[1] * height)
+            pyautogui.click(target_x, target_y)
+            print(f"Action: CLICK at ({target_x}, {target_y})")
+
+        elif action_type == config.ACTION_DRAG:
+            params = action_params[0].cpu().numpy()
+            start_x = abs_x + int(params[0] * width)
+            start_y = abs_y + int(params[1] * height)
+            end_x = abs_x + int(params[2] * width)
+            end_y = abs_y + int(params[3] * height)
+            pyautogui.moveTo(start_x, start_y)
+            pyautogui.dragTo(end_x, end_y, duration=0.5)
+            print(f"Action: DRAG from ({start_x}, {start_y}) to ({end_x}, {end_y})")
+
+        elif action_type == config.ACTION_WAIT:
+            # No actual action, just wait
+            print("Action: WAIT")
+            pass
