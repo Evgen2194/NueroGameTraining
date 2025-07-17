@@ -76,7 +76,7 @@ def main():
                 mission_buffer.append(experience)
             else:
                 replay_memory.push(experience)
-            # ui.perform_action(action) # TODO
+            ui.perform_action(action)
         elif feedback == "reject":
             reward = config.REWARD_REJECT
             experience = (stacked_frames, action, reward, False)
