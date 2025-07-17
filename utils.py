@@ -2,6 +2,20 @@ import numpy as np
 from PIL import Image
 import cv2
 import pyautogui
+import ctypes
+
+def get_scaling_factor():
+    try:
+        # Query DPI awareness
+        awareness = ctypes.c_int()
+        ctypes.windll.shcore.GetProcessDpiAwareness(0, ctypes.byref(awareness))
+        # Query DPI for the main monitor
+        dpi = ctypes.windll.user32.GetDpiForSystem()
+        # The default DPI is 96. Scaling factor is the current DPI / 96.
+        return dpi / 96.0
+    except (AttributeError, TypeError):
+        # For non-Windows platforms or if anything goes wrong, assume no scaling.
+        return 1.0
 
 def preprocess_frame(frame, resolution):
     """

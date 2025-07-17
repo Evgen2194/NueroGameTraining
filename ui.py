@@ -3,6 +3,7 @@ import numpy as np
 from pynput import mouse, keyboard
 import pyautogui
 import config
+import utils
 
 class UI:
     def __init__(self):
@@ -26,7 +27,8 @@ class UI:
 
     def _on_click_area(self, x, y, button, pressed):
         if pressed:
-            self.points.append((x, y))
+            scaling_factor = utils.get_scaling_factor()
+            self.points.append((int(x * scaling_factor), int(y * scaling_factor)))
             return False
 
     def display_action_suggestion(self, screenshot, action):
