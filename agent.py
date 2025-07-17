@@ -71,7 +71,7 @@ class Agent:
         transitions = self.memory.sample(config.BATCH_SIZE)
         batch = list(zip(*transitions))
 
-        states = torch.FloatTensor(np.array(batch[0])).to(self.device)
+        states = torch.FloatTensor(batch[0]).to(self.device)
 
         action_types = torch.cat([a[0] for a in batch[1]]).to(self.device)
         action_params = torch.cat([a[1] for a in batch[1]]).to(self.device)

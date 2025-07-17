@@ -5,11 +5,13 @@ import pyautogui
 
 def preprocess_frame(frame, resolution):
     """
-    Resize and normalize a single frame.
+    Convert to grayscale, resize, and normalize a single frame.
     """
-    img = Image.fromarray(frame)
+    img = Image.fromarray(frame).convert('L') # Convert to grayscale
     img = img.resize(resolution, Image.Resampling.LANCZOS)
     img_np = np.array(img)
+    # Add a channel dimension
+    img_np = np.expand_dims(img_np, axis=0)
     return img_np.astype(np.float32) / 255.0
 
 def stack_frames(stacked_frames, new_frame, stack_size):
@@ -17,10 +19,11 @@ def stack_frames(stacked_frames, new_frame, stack_size):
     Stack frames for temporal information.
     """
     if stacked_frames is None:
-        stacked_frames = np.stack([new_frame] * stack_size, axis=0)
+        # Initial setup: stack the new_frame stack_size times
+        stacked_frames = np.concatenate([new_frame] * stack_size, axis=0)
     else:
-        stacked_frames = np.roll(stacked_frames, -1, axis=0)
-        stacked_frames[-1] = new_frame
+        # Append new_frame and remove the oldest frame
+        stacked_frames = np.concatenate((stacked_frames[1:], new_frame), axis=0)
     return stacked_frames
 
 def capture_screen(region=None):

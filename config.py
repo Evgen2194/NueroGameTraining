@@ -3,7 +3,7 @@ TARGET_RESOLUTION = (128, 128)
 FRAME_STACK_SIZE = 4
 
 # Model settings
-INPUT_CHANNELS = FRAME_STACK_SIZE * 3  # 4 frames * 3 RGB channels
+INPUT_CHANNELS = FRAME_STACK_SIZE  # 4 frames * 1 grayscale channel
 
 # Training settings
 BATCH_SIZE = 32
