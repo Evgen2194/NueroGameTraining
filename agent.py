@@ -104,5 +104,5 @@ class Agent:
 
     def load_model(self, path=config.MODEL_PATH):
         if os.path.exists(path):
-            self.model.load_state_dict(torch.load(path))
+            self.model.load_state_dict(torch.load(path, weights_only=True))
             self.model.eval()
