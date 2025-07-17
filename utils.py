@@ -1,6 +1,7 @@
 import numpy as np
 from PIL import Image
 import cv2
+import pyautogui
 
 def preprocess_frame(frame, resolution):
     """
