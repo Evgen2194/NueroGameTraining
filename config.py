@@ -1,6 +1,6 @@
 # Screen capture settings
 TARGET_RESOLUTION = (128, 128)
-FRAME_STACK_SIZE = 4
+FRAME_STACK_SIZE = 12
 
 # Model settings
 INPUT_CHANNELS = FRAME_STACK_SIZE  # 4 frames * 1 grayscale channel
