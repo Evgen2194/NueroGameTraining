@@ -41,18 +41,18 @@ class UI:
             params = action_params[0].cpu().numpy()
             center_x = int(params[0] * vis_frame.shape[1])
             center_y = int(params[1] * vis_frame.shape[0])
-            cv2.circle(overlay, (center_x, center_y), 30, (0, 0, 255), 3)
-            cv2.putText(overlay, "CLICK", (center_x - 30, center_y - 40),
-                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            cv2.circle(overlay, (center_x, center_y), 50, (0, 255, 0), 5)
+            cv2.putText(overlay, "CLICK", (center_x - 50, center_y - 60),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 3)
         elif action_type == config.ACTION_DRAG:
             params = action_params[0].cpu().numpy()
             start_x = int(params[0] * vis_frame.shape[1])
             start_y = int(params[1] * vis_frame.shape[0])
             end_x = int(params[2] * vis_frame.shape[1])
             end_y = int(params[3] * vis_frame.shape[0])
-            cv2.arrowedLine(overlay, (start_x, start_y), (end_x, end_y), (0, 0, 255), 5)
-            cv2.putText(overlay, "DRAG", (start_x - 30, start_y - 20),
-                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            cv2.arrowedLine(overlay, (start_x, start_y), (end_x, end_y), (0, 255, 0), 10)
+            cv2.putText(overlay, "DRAG", (start_x - 50, start_y - 30),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 3)
         elif action_type == config.ACTION_WAIT:
             cv2.putText(overlay, "WAIT", (vis_frame.shape[1] // 3, vis_frame.shape[0] // 2),
                         cv2.FONT_HERSHEY_SIMPLEX, 3, (0, 0, 255), 5)
@@ -62,9 +62,10 @@ class UI:
 
         if self.action_visual is None:
             self.action_visual = "Agent Suggestion"
-            cv2.namedWindow(self.action_visual)
-            cv2.moveWindow(self.action_visual, self.game_area[0], self.game_area[1])
-            cv2.resizeWindow(self.action_visual, self.game_area[2] - self.game_area[0], self.game_area[3] - self.game_area[1])
+            cv2.namedWindow(self.action_visual, cv2.WND_PROP_FULLSCREEN)
+            cv2.setWindowProperty(self.action_visual, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+            cv2.setWindowProperty(self.action_visual, cv2.WND_PROP_TOPMOST, 1)
+
 
         cv2.imshow(self.action_visual, vis_frame)
         cv2.waitKey(1)
@@ -76,32 +77,23 @@ class UI:
         return self.feedback
 
     def _on_press(self, key):
-        try:
-            if key == keyboard.Key.up:
-                self.feedback = "approve"
-                return False
-            elif key == keyboard.Key.down:
-                self.feedback = "reject"
-                return False
-            elif key == keyboard.Key.left:
-                self.feedback = "force_wait"
-                return False
-            elif key == keyboard.Key.space:
-                self.feedback = "skip"
-                return False
-            # Hotkeys for mission control
-            elif key.char == '1':
+        if key == keyboard.Key.up:
+            self.feedback = "approve"
+        elif key == keyboard.Key.down:
+            self.feedback = "reject"
+        elif key == keyboard.Key.left:
+            self.feedback = "force_wait"
+        elif key == keyboard.Key.space:
+            self.feedback = "skip"
+        elif hasattr(key, 'char'):
+            if key.char == '1':
                 self.feedback = "start_mission"
-                return False
             elif key.char == '2':
                 self.feedback = "mission_win"
-                return False
             elif key.char == '3':
                 self.feedback = "mission_loss"
-                return False
-        except AttributeError:
-            # This handles non-char keys if needed
-            pass
+        # Stop the listener regardless of the key
+        return False
 
     def perform_action(self, action):
         action_type, action_params = action
